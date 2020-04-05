@@ -251,6 +251,20 @@ func TestGetShapleyValue(t *testing.T) {
 	}
 }
 
+func ExampleSet() {
+	contribution := Contribution{
+		Touchpoints: Touchpoints([]Touchpoint{
+			Touchpoint{"Touchpoint 2"},
+			Touchpoint{"Touchpoint 1"},
+			Touchpoint{"Touchpoint 3"},
+		}),
+		Value: *(new(big.Float).SetFloat64(100.)),
+	}
+
+	fmt.Println(contribution.Set())
+	// Output: {map[{Touchpoint 1}:{} {Touchpoint 2}:{} {Touchpoint 3}:{}] 100}
+}
+
 func TestSet(t *testing.T) {
 	touchpoints := touchpointFixture()
 	contribution := Contribution{
