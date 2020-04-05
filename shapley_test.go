@@ -206,3 +206,47 @@ func TestGetCoalitionValue(t *testing.T) {
 		t.Errorf("Miscalculated coalition value.\nExpected: %s\nGot: %s", expectedValue.String(), coalitionValue.String())
 	}
 }
+
+func ExampleGetShapleyValue() {
+	contributions := []ContributionSet{
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(100.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 2"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(200.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 3"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(300.),
+		},
+	}
+	touchpoint := Touchpoint{"Touchpoint 1"}
+	shapleyValue := GetShapleyValue(touchpoint, contributions)
+
+	fmt.Println(shapleyValue.String())
+	// Output: 350
+}
+
+func TestGetShapleyValue(t *testing.T) {
+	contributions := contributionSetFixture()
+	touchpoint := touchpointFixture()[2]
+	shapleyValue := GetShapleyValue(touchpoint, contributions)
+	expectedValue := *(new(big.Float).SetFloat64(585.))
+
+	shapleyValueFloat, _ := shapleyValue.Float64()
+	expectedValueFloat, _ := expectedValue.Float64()
+
+	if shapleyValueFloat != expectedValueFloat {
+		t.Errorf("Miscalculated Shapley value.\nExpected: %s\nGot: %s", expectedValue.String(), shapleyValue.String())
+	}
+}
