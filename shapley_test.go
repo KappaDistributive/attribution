@@ -251,6 +251,7 @@ func TestGetShapleyValue(t *testing.T) {
 	}
 }
 
+// Convert an ordered Contribution into an unordered ContributionSet.
 func ExampleSet() {
 	contribution := Contribution{
 		Touchpoints: Touchpoints([]Touchpoint{
