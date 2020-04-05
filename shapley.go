@@ -1,22 +1,9 @@
-// Package shapley provides multi-channel attribution via Shapley values.
-// For a concise introduction to Shapley values, see https://christophm.github.io/interpretable-ml-book/shapley.html
-package shapley
+package main
 
 import (
 	"log"
 	"math/big"
 )
-
-// A Touchpoint represents a contributing entity in a ContributionSet.
-type Touchpoint struct {
-	Name string // name of the touchpoint
-}
-
-// A ContributionSet consists of a set of touchpoints together with their combined value.
-type ContributionSet struct {
-	Touchpoints map[Touchpoint]struct{}
-	Value       big.Float
-}
 
 // GetTotalValue returns the summed value over all contributions.
 func GetTotalValue(contributions []ContributionSet) big.Float {
@@ -80,12 +67,13 @@ func findTouchpoint(touchpoint Touchpoint, slice []Touchpoint) (int, bool) {
 }
 
 // GetShapleyValue returns the (unordered) Shapley value of a given touchpoint over all provided contributions.
+// For a concise introduction to Shapley values, see https://christophm.github.io/interpretable-ml-book/shapley.html
 func GetShapleyValue(touchpoint Touchpoint, allContributions []ContributionSet) big.Float {
 	shapleyValue := new(big.Float)
 	allTouchpoints := GetAllTouchpoints(allContributions)
 	touchpointIndex, found := findTouchpoint(touchpoint, allTouchpoints)
 	if !found {
-		log.Fatal("Illegal touchpoint: %s", touchpoint)
+		log.Fatal("Illegal touchpoint!")
 	}
 	allTouchpoints[touchpointIndex] = allTouchpoints[len(allTouchpoints)-1]
 	allTouchpoints[len(allTouchpoints)-1] = touchpoint
