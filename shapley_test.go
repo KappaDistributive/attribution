@@ -39,7 +39,7 @@ func contributionSetFixtures() []ContributionSet {
 }
 
 // Output
-func ExampleGetAllTouchpoints(t *testing.T) {
+func ExampleGetAllTouchpoints() {
 
 	contributions := []ContributionSet{
 		ContributionSet{
