@@ -38,9 +38,7 @@ func contributionSetFixtures() []ContributionSet {
 
 }
 
-// Output
 func ExampleGetAllTouchpoints() {
-
 	contributions := []ContributionSet{
 		ContributionSet{
 			Touchpoints: map[Touchpoint]struct{}{
@@ -60,6 +58,7 @@ func ExampleGetAllTouchpoints() {
 
 	allTouchpoints := GetAllTouchpoints(contributions)
 	fmt.Println(allTouchpoints)
+	// Output: [{Touchpoint 1} {Touchpoint 2} {Touchpoint 3}]
 }
 
 func TestGetAllTouchpoints(t *testing.T) {
