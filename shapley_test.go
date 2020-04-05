@@ -81,3 +81,27 @@ func TestGetAllTouchpoints(t *testing.T) {
 	}
 
 }
+
+func ExampleGetTotalValue() {
+	contributions := []ContributionSet{
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 2"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(100.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 3"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(200.),
+		},
+	}
+
+	totalValue := GetTotalValue(contributions)
+	fmt.Println(totalValue.String())
+	// Output: 300
+
+}
