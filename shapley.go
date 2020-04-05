@@ -3,6 +3,7 @@ package attribution
 import (
 	"log"
 	"math/big"
+	"sort"
 )
 
 // GetTotalValue returns the summed value over all contributions.
@@ -17,9 +18,9 @@ func GetTotalValue(contributions []ContributionSet) big.Float {
 }
 
 // GetAllTouchpoints returns a list (without repetition) all touchpoints encountered in contributions.
-func GetAllTouchpoints(contributions []ContributionSet) []Touchpoint {
+func GetAllTouchpoints(contributions []ContributionSet) Touchpoints {
 	seen := make(map[Touchpoint]struct{})
-	var touchpoints []Touchpoint
+	var touchpoints Touchpoints
 
 	for _, contribution := range contributions {
 		for touchpoint, _ := range contribution.Touchpoints {
@@ -29,6 +30,7 @@ func GetAllTouchpoints(contributions []ContributionSet) []Touchpoint {
 			}
 		}
 	}
+	sort.Sort(touchpoints)
 
 	return touchpoints
 }

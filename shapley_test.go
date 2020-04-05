@@ -243,10 +243,43 @@ func TestGetShapleyValue(t *testing.T) {
 	shapleyValue := GetShapleyValue(touchpoint, contributions)
 	expectedValue := *(new(big.Float).SetFloat64(585.))
 
-	shapleyValueFloat, _ := shapleyValue.Float64()
-	expectedValueFloat, _ := expectedValue.Float64()
+	got, _ := shapleyValue.Float64()
+	want, _ := expectedValue.Float64()
 
-	if shapleyValueFloat != expectedValueFloat {
-		t.Errorf("Miscalculated Shapley value.\nExpected: %s\nGot: %s", expectedValue.String(), shapleyValue.String())
+	if got != want {
+		t.Errorf("got %f want %f", got, want)
+	}
+}
+
+func TestSet(t *testing.T) {
+	touchpoints := touchpointFixture()
+	contribution := Contribution{
+		Touchpoints: touchpoints,
+		Value:       *(new(big.Float).SetFloat64(100.)),
+	}
+
+	got := contribution.Set()
+
+	touchpointSet := map[Touchpoint]struct{}{}
+	for _, touchpoint := range touchpoints {
+		touchpointSet[touchpoint] = struct{}{}
+	}
+	want := ContributionSet{
+		Touchpoints: touchpointSet,
+		Value:       *(new(big.Float).SetFloat64(100.)),
+	}
+
+	if got.Value.String() != want.Value.String() {
+		t.Errorf("got %s want %s", got.Value.String(), want.Value.String())
+	}
+	for touchpoint, _ := range got.Touchpoints {
+		if _, ok := want.Touchpoints[touchpoint]; !ok {
+			t.Errorf("want is missing %s", touchpoint)
+		}
+	}
+	for touchpoint, _ := range want.Touchpoints {
+		if _, ok := got.Touchpoints[touchpoint]; !ok {
+			t.Errorf("got is missing %s", touchpoint)
+		}
 	}
 }
