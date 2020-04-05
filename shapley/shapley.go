@@ -1,3 +1,5 @@
+// Package shapley provides multi-channel attribution via Shapley values.
+// For a concise introduction to Shapley values, see https://christophm.github.io/interpretable-ml-book/shapley.html
 package shapley
 
 import (
@@ -5,15 +7,18 @@ import (
 	"math/big"
 )
 
+// A Touchpoint represents a contributing entity in a ContributionSet.
 type Touchpoint struct {
-	Name string
+	Name string // name of the touchpoint
 }
 
+// A ContributionSet consists of a set of touchpoints together with their combined value.
 type ContributionSet struct {
 	Touchpoints map[Touchpoint]struct{}
 	Value       big.Float
 }
 
+// GetTotalValue returns the summed value over all contributions.
 func GetTotalValue(contributions []ContributionSet) big.Float {
 	value := new(big.Float)
 
@@ -24,6 +29,7 @@ func GetTotalValue(contributions []ContributionSet) big.Float {
 	return *value
 }
 
+// GetAllTouchpoints returns a list (without repetition) all touchpoints encountered in contributions.
 func GetAllTouchpoints(contributions []ContributionSet) []Touchpoint {
 	seen := make(map[Touchpoint]struct{})
 	var touchpoints []Touchpoint
@@ -40,6 +46,7 @@ func GetAllTouchpoints(contributions []ContributionSet) []Touchpoint {
 	return touchpoints
 }
 
+// GetCoalitionValue returns the total value a given coalition achieved over a list of contributions.
 func GetCoalitionValue(coalition map[Touchpoint]struct{}, allContributions []ContributionSet) big.Float {
 	coalitionValue := new(big.Float)
 
@@ -60,6 +67,9 @@ func GetCoalitionValue(coalition map[Touchpoint]struct{}, allContributions []Con
 	return *coalitionValue
 }
 
+// findTouchpoint attempts to find a given touchpoint in a slice of touchpoints.
+// If the search is successful, return the first indice where the touchpoint occured in the first coordinate and true in the second coordinate.
+// Otherwise, return (-1, false)
 func findTouchpoint(touchpoint Touchpoint, slice []Touchpoint) (int, bool) {
 	for index, element := range slice {
 		if touchpoint == element {
@@ -69,6 +79,7 @@ func findTouchpoint(touchpoint Touchpoint, slice []Touchpoint) (int, bool) {
 	return -1, false
 }
 
+// GetShapleyValue returns the (unordered) Shapley value of a given touchpoint over all provided contributions.
 func GetShapleyValue(touchpoint Touchpoint, allContributions []ContributionSet) big.Float {
 	shapleyValue := new(big.Float)
 	allTouchpoints := GetAllTouchpoints(allContributions)
@@ -110,6 +121,8 @@ func GetShapleyValue(touchpoint Touchpoint, allContributions []ContributionSet) 
 	return *shapleyValue
 }
 
+// getPowerSetIndices provides the powerset of {0, 1, .., size - 1}.
+// This can be used to iterate over arbitary powersets by using this result as an index.
 func getPowerSetIndices(size uint) [][]uint {
 	if size < 1 {
 		return [][]uint{[]uint{}}
