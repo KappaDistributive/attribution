@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func touchpointFixtures() []Touchpoint {
+func touchpointFixture() []Touchpoint {
 	var touchpoints []Touchpoint
 
 	for i := 0; i < 10; i++ {
@@ -16,10 +16,10 @@ func touchpointFixtures() []Touchpoint {
 	return touchpoints
 }
 
-func contributionSetFixtures() []ContributionSet {
+func contributionSetFixture() []ContributionSet {
 	var contributions []ContributionSet
 
-	touchpoints := touchpointFixtures()
+	touchpoints := touchpointFixture()
 
 	for i := 0; i < 5; i++ {
 		for j := 0; j <= 5; j++ {
@@ -34,8 +34,15 @@ func contributionSetFixtures() []ContributionSet {
 			contributions = append(contributions, contribution)
 		}
 	}
-	return contributions
 
+	return contributions
+}
+
+func coalitionFixture() map[Touchpoint]struct{} {
+	return map[Touchpoint]struct{}{
+		Touchpoint{"Touchpoint 1"}: struct{}{},
+		Touchpoint{"Touchpoint 2"}: struct{}{},
+	}
 }
 
 func ExampleGetAllTouchpoints() {
@@ -63,7 +70,7 @@ func ExampleGetAllTouchpoints() {
 }
 
 func TestGetAllTouchpoints(t *testing.T) {
-	contributions := contributionSetFixtures()
+	contributions := contributionSetFixture()
 
 	allTouchpoints := GetAllTouchpoints(contributions)
 	for _, contribution := range contributions {
@@ -108,7 +115,7 @@ func ExampleGetTotalValue() {
 }
 
 func TestGetTotalValue(t *testing.T) {
-	contributions := contributionSetFixtures()
+	contributions := contributionSetFixture()
 	totalValue := GetTotalValue(contributions)
 
 	realValue := new(big.Float)
@@ -118,5 +125,84 @@ func TestGetTotalValue(t *testing.T) {
 
 	if (*realValue).String() != totalValue.String() {
 		t.Errorf("Miscalculated total value.\nExpected: %s\nGot:%s", (*realValue).String(), totalValue.String())
+	}
+}
+
+func ExampleGetCoalitionValue_singleton() {
+	contributions := []ContributionSet{
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(100.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 2"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(200.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 2"}: struct{}{},
+				Touchpoint{"Touchpoint 3"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(300.),
+		},
+	}
+
+	coalition := map[Touchpoint]struct{}{
+		Touchpoint{"Touchpoint 1"}: struct{}{},
+	}
+
+	coalitionValue := GetCoalitionValue(coalition, contributions)
+	fmt.Println(coalitionValue.String())
+	// Output: 100
+}
+
+func ExampleGetCoalitionValue_multiple() {
+	contributions := []ContributionSet{
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(100.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 2"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(200.),
+		},
+		ContributionSet{
+			Touchpoints: map[Touchpoint]struct{}{
+				Touchpoint{"Touchpoint 1"}: struct{}{},
+				Touchpoint{"Touchpoint 3"}: struct{}{},
+			},
+			Value: *new(big.Float).SetFloat64(300.),
+		},
+	}
+
+	coalition := map[Touchpoint]struct{}{
+		Touchpoint{"Touchpoint 1"}: struct{}{},
+		Touchpoint{"Touchpoint 3"}: struct{}{},
+	}
+
+	coalitionValue := GetCoalitionValue(coalition, contributions)
+	fmt.Println(coalitionValue.String())
+	// Output: 400
+}
+
+func TestGetCoalitionValue(t *testing.T) {
+	contributions := contributionSetFixture()
+	coalition := coalitionFixture()
+
+	coalitionValue := GetCoalitionValue(coalition, contributions)
+	expectedValue := *new(big.Float).SetFloat64(1400.)
+
+	if coalitionValue.String() != expectedValue.String() {
+		t.Errorf("Miscalculated coalition value.\nExpected: %s\nGot: %s", expectedValue.String(), coalitionValue.String())
 	}
 }
