@@ -1,5 +1,5 @@
 // Provides multi-channel attribution techniques.
-package main
+package attribution
 
 import (
 	"fmt"
