@@ -57,6 +57,7 @@ func ExampleGetAllTouchpoints() {
 	}
 
 	allTouchpoints := GetAllTouchpoints(contributions)
+
 	fmt.Println(allTouchpoints)
 	// Output: [{Touchpoint 1} {Touchpoint 2} {Touchpoint 3}]
 }
@@ -101,7 +102,21 @@ func ExampleGetTotalValue() {
 	}
 
 	totalValue := GetTotalValue(contributions)
+
 	fmt.Println(totalValue.String())
 	// Output: 300
+}
 
+func TestGetTotalValue(t *testing.T) {
+	contributions := contributionSetFixtures()
+	totalValue := GetTotalValue(contributions)
+
+	realValue := new(big.Float)
+	for _, contribution := range contributions {
+		realValue.Add(realValue, &contribution.Value)
+	}
+
+	if (*realValue).String() != totalValue.String() {
+		t.Errorf("Miscalculated total value.\nExpected: %s\nGot:%s", (*realValue).String(), totalValue.String())
+	}
 }
