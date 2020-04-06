@@ -6,45 +6,6 @@ import (
 	"testing"
 )
 
-func touchpointFixture() []Touchpoint {
-	var touchpoints []Touchpoint
-
-	for i := 0; i < 10; i++ {
-		touchpoints = append(touchpoints, Touchpoint{fmt.Sprintf("Touchpoint %d", i)})
-	}
-
-	return touchpoints
-}
-
-func contributionSetFixture() []ContributionSet {
-	var contributions []ContributionSet
-
-	touchpoints := touchpointFixture()
-
-	for i := 0; i < 5; i++ {
-		for j := 0; j <= 5; j++ {
-			touchpointMap := make(map[Touchpoint]struct{})
-			for _, touchpoint := range touchpoints[i : i+j] {
-				touchpointMap[touchpoint] = struct{}{}
-			}
-			contribution := ContributionSet{
-				Touchpoints: touchpointMap,
-				Value:       *new(big.Float).SetFloat64(float64(100 * i)),
-			}
-			contributions = append(contributions, contribution)
-		}
-	}
-
-	return contributions
-}
-
-func coalitionFixture() map[Touchpoint]struct{} {
-	return map[Touchpoint]struct{}{
-		Touchpoint{"Touchpoint 1"}: struct{}{},
-		Touchpoint{"Touchpoint 2"}: struct{}{},
-	}
-}
-
 func ExampleGetAllTouchpoints() {
 	contributions := []ContributionSet{
 		ContributionSet{
@@ -58,6 +19,7 @@ func ExampleGetAllTouchpoints() {
 			Touchpoints: map[Touchpoint]struct{}{
 				Touchpoint{"Touchpoint 1"}: struct{}{},
 				Touchpoint{"Touchpoint 3"}: struct{}{},
+				Touchpoint{"Touchpoint 1"}: struct{}{},
 			},
 			Value: *new(big.Float).SetFloat64(200.),
 		},
@@ -103,6 +65,7 @@ func ExampleGetTotalValue() {
 			Touchpoints: map[Touchpoint]struct{}{
 				Touchpoint{"Touchpoint 1"}: struct{}{},
 				Touchpoint{"Touchpoint 3"}: struct{}{},
+				Touchpoint{"Touchpoint 1"}: struct{}{},
 			},
 			Value: *new(big.Float).SetFloat64(200.),
 		},
@@ -147,6 +110,7 @@ func ExampleGetCoalitionValue_singleton() {
 			Touchpoints: map[Touchpoint]struct{}{
 				Touchpoint{"Touchpoint 2"}: struct{}{},
 				Touchpoint{"Touchpoint 3"}: struct{}{},
+				Touchpoint{"Touchpoint 1"}: struct{}{},
 			},
 			Value: *new(big.Float).SetFloat64(300.),
 		},
@@ -180,6 +144,7 @@ func ExampleGetCoalitionValue_multiple() {
 			Touchpoints: map[Touchpoint]struct{}{
 				Touchpoint{"Touchpoint 1"}: struct{}{},
 				Touchpoint{"Touchpoint 3"}: struct{}{},
+				Touchpoint{"Touchpoint 1"}: struct{}{},
 			},
 			Value: *new(big.Float).SetFloat64(300.),
 		},
@@ -226,6 +191,7 @@ func ExampleGetShapleyValue() {
 			Touchpoints: map[Touchpoint]struct{}{
 				Touchpoint{"Touchpoint 1"}: struct{}{},
 				Touchpoint{"Touchpoint 3"}: struct{}{},
+				Touchpoint{"Touchpoint 1"}: struct{}{},
 			},
 			Value: *new(big.Float).SetFloat64(300.),
 		},
