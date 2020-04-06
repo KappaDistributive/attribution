@@ -1,8 +1,8 @@
 # attribution
 
-attribution provides various multi-channel attribution methods.
+`attribution` provides various multi-channel attribution methods.
 
-Currently the following methods are included:
+Currently, the following methods are included:
 
 * first touchpoint attribution,
 * last touchpoint attribution,
