@@ -29,7 +29,7 @@ func (touchpoints Touchpoints) Len() int {
 	return len(touchpoints)
 }
 
-// Less provides a strict orders on Touchpoints.
+// Less provides a strict order on Touchpoints.
 func (touchpoints Touchpoints) Less(i, j int) bool {
 	return strings.Compare(touchpoints[i].Name, touchpoints[j].Name) == -1
 }
