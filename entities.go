@@ -6,6 +6,34 @@ import (
 	"strings"
 )
 
+// A TransitionMatrix captures the transition probabilities between states in an underlying Markov process.
+type TransitionMatrix struct {
+	TouchpointIndex         map[Touchpoint]int
+	TransitionProbabilities [][]big.Float
+}
+
+// GetTransitionProbability returns the transition probability of startNode -> endNode in the underlying Markov process.
+func (matrix TransitionMatrix) GetTransitionProbability(startNode Touchpoint, endNode Touchpoint) big.Float {
+	return matrix.TransitionProbabilities[matrix.TouchpointIndex[startNode]][matrix.TouchpointIndex[endNode]]
+}
+
+// String provides a string representation of TransitionMatrix.
+func (matrix TransitionMatrix) String() string {
+	represenation := "{\n  TouchpointIndex: {"
+	for touchpoint, index := range matrix.TouchpointIndex {
+		represenation += fmt.Sprintf("    %s: %d,\n", touchpoint, index)
+	}
+	represenation += "  },\n  TransitionProbabilities: {"
+	for i, row := range matrix.TransitionProbabilities {
+		represenation += "\n    "
+		for j, _ := range row {
+			represenation += matrix.TransitionProbabilities[i][j].Text('f', 2) + ", "
+		}
+	}
+	represenation += "\n  },\n}"
+	return represenation
+}
+
 // A Touchpoint represents a contributing entity in a ContributionSet.
 type Touchpoint struct {
 	Name string // name of the touchpoint
